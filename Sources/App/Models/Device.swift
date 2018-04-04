@@ -7,6 +7,7 @@ typealias JSONDictionary = [String: Any]
 
 final class Device: Model {
     let storage = Storage()
+    static let entity = "Device"
     
     var identifier: String
     var vendor:     String

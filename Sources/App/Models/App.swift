@@ -5,6 +5,7 @@ import HTTP
 // MARK: App model
 final class App: Model {
     let storage = Storage()
+    static let entity = "App"
     
     var name: String
     var key: String
