@@ -106,11 +106,11 @@ extension Device: Preparation {
             builder.bool(Device.Keys.subscribed)
             builder.string(Device.Keys.os)
             builder.string(Device.Keys.model)
-            builder.string(Device.Keys.tags)
+            builder.custom(Device.Keys.tags, type: "[JSON]]")
             builder.string(Device.Keys.language)
             builder.string(Device.Keys.app)
-            builder.string(Device.Keys.createdAt)
-            builder.string(Device.Keys.updatedAt)
+            builder.date(Device.Keys.createdAt)
+            builder.date(Device.Keys.updatedAt)
         }
     }
     
