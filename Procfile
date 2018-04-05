@@ -1,1 +1,1 @@
-web: ./.build/release/Run -port $PORT
+web: Run -port $PORT
