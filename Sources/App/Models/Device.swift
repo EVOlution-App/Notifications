@@ -3,8 +3,6 @@ import FluentProvider
 import HTTP
 
 // MARK: - Device model
-typealias JSONDictionary = [String: Any]
-
 final class Device: Model {
     let storage = Storage()
     static let entity = "Device"
@@ -15,7 +13,7 @@ final class Device: Model {
     var subscribed: Bool = true
     var os:         String?
     var model:      String?
-    var tags:       JSONDictionary?
+    var tags:       [JSON]?
     var language:   String?
     var appID:      Identifier
     var createdAt:  Date?
@@ -46,7 +44,7 @@ final class Device: Model {
          subscribed: Bool = true,
          os: String? = nil,
          model: String? = nil,
-         tags: JSONDictionary? = nil,
+         tags: [JSON]? = nil,
          language: String? = nil,
          appID: Identifier,
          createdAt: Date? = Date(),
@@ -179,7 +177,7 @@ extension Device: Updateable {
             UpdateableKey(Device.Keys.model, String.self) { device, model in
                 device.model = model
             },
-            UpdateableKey(Device.Keys.tags, JSONDictionary.self) { device, tags in
+            UpdateableKey(Device.Keys.tags, [JSON].self) { device, tags in
                 device.tags = tags
             },
             UpdateableKey(Device.Keys.language, String.self) { device, language in

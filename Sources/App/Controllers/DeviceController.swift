@@ -51,7 +51,12 @@ final class DeviceController {
         
         let os = json["os"]?.string
         let model = json["model"]?.string
-        let tags = json["tags"]?.object
+        
+        var tags: [JSON]?
+        if let values = json["tags"]?.array {
+            tags = values
+        }
+
         let language = json["language"]?.string
         
 
@@ -59,6 +64,8 @@ final class DeviceController {
         guard let device = try query.filter("vendor", vendor).first() else {
             // New device
             let device = try request.device()
+            device.appID = key
+            
             try device.save()
 
             return device
