@@ -42,8 +42,8 @@ final class DeviceController {
             throw Abort(Status.unprocessableEntity, reason: "Missing 'identifier' parameter")
         }
         
-        guard let vendor = json["vendor"]?.string else {
-            throw Abort(Status.unprocessableEntity, reason: "Missing 'vendor' parameter")
+        guard let owner = json["owner"]?.string else {
+            throw Abort(Status.unprocessableEntity, reason: "Missing 'owner' parameter")
         }
         
         let test: Bool = json["test"]?.bool ?? false
@@ -61,7 +61,7 @@ final class DeviceController {
         
 
         let query = try Device.makeQuery()
-        guard let device = try query.filter("vendor", vendor).first() else {
+        guard let device = try query.filter("owner", owner).first() else {
             // New device
             let device = try request.device()
             device.appID = key
@@ -72,7 +72,7 @@ final class DeviceController {
         }
 
         device.identifier = identifier
-        device.vendor = vendor
+        device.owner = owner
         device.test = test
         device.subscribed = subscribed
         device.os = os

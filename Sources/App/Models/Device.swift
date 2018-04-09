@@ -8,7 +8,7 @@ final class Device: Model {
     static let entity = "Device"
     
     var identifier: String
-    var vendor:     String
+    var owner:     String
     var test:       Bool = false
     var subscribed: Bool = true
     var os:         String?
@@ -26,7 +26,7 @@ final class Device: Model {
     struct Keys {
         static let id           = "id"
         static let identifier   = "identifier"
-        static let vendor       = "vendor"
+        static let owner       = "owner"
         static let test         = "test"
         static let subscribed   = "subscribed"
         static let os           = "os"
@@ -39,7 +39,7 @@ final class Device: Model {
     }
     
     init(identifier: String,
-         vendor: String,
+         owner: String,
          test: Bool = false,
          subscribed: Bool = true,
          os: String? = nil,
@@ -51,7 +51,7 @@ final class Device: Model {
          updatedAt: Date? = Date()) {
         
         self.identifier = identifier
-        self.vendor = vendor
+        self.owner = owner
         self.test = test
         self.subscribed = subscribed
         self.os = os
@@ -65,7 +65,7 @@ final class Device: Model {
     
     init(row: Row) throws {
         identifier  = try row.get(Device.Keys.identifier)
-        vendor      = try row.get(Device.Keys.vendor)
+        owner      = try row.get(Device.Keys.owner)
         test        = try row.get(Device.Keys.test)
         subscribed  = try row.get(Device.Keys.subscribed)
         os          = try row.get(Device.Keys.os)
@@ -80,7 +80,7 @@ final class Device: Model {
     func makeRow() throws -> Row {
         var row = Row()
         try row.set(Device.Keys.identifier, identifier)
-        try row.set(Device.Keys.vendor, vendor)
+        try row.set(Device.Keys.owner, owner)
         try row.set(Device.Keys.test, test)
         try row.set(Device.Keys.subscribed, subscribed)
         try row.set(Device.Keys.os, os)
@@ -101,7 +101,7 @@ extension Device: Preparation {
         try database.create(self) { builder in
             builder.id()
             builder.string(Device.Keys.identifier)
-            builder.string(Device.Keys.vendor)
+            builder.string(Device.Keys.owner)
             builder.bool(Device.Keys.test)
             builder.bool(Device.Keys.subscribed)
             builder.string(Device.Keys.os)
@@ -124,7 +124,7 @@ extension Device: JSONConvertible {
     convenience init(json: JSON) throws {
         self.init(
             identifier: try json.get(Device.Keys.identifier),
-            vendor:     try json.get(Device.Keys.vendor),
+            owner:     try json.get(Device.Keys.owner),
             test:       try json.get(Device.Keys.test),
             subscribed: try json.get(Device.Keys.subscribed),
             os:         try json.get(Device.Keys.os),
@@ -138,7 +138,7 @@ extension Device: JSONConvertible {
     func makeJSON() throws -> JSON {
         var json = JSON()
         try json.set(Device.Keys.identifier, identifier)
-        try json.set(Device.Keys.vendor, vendor)
+        try json.set(Device.Keys.owner, owner)
         try json.set(Device.Keys.test, test)
         try json.set(Device.Keys.subscribed, subscribed)
         try json.set(Device.Keys.os, os)
@@ -162,8 +162,8 @@ extension Device: Updateable {
             UpdateableKey(Device.Keys.identifier, String.self) { device, identifier in
                 device.identifier = identifier
             },
-            UpdateableKey(Device.Keys.vendor, String.self) { device, vendor in
-                device.vendor = vendor
+            UpdateableKey(Device.Keys.owner, String.self) { device, owner in
+                device.owner = owner
             },
             UpdateableKey(Device.Keys.test, Bool.self) { device, test in
                 device.test = test
