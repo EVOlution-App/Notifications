@@ -19,13 +19,13 @@ final class DeviceController {
     func show(_ request: Request) throws -> ResponseRepresentable {
         try checkAPIKey(request)
         
-        guard let vendor = request.parameters["vendor"]?.string else {
-            throw Abort(Status.notFound, reason: "Vendor ID is required")
+        guard let identifier = request.parameters["identifier"]?.string else {
+            throw Abort(Status.notFound, reason: "identifier is required")
         }
 
         let query = try Device.makeQuery()
-        guard let device = try query.filter("vendor", vendor).first() else {
-            throw Abort(Status.notFound, reason: "Vendor ID could be found")
+        guard let device = try query.filter("identifier", identifier).first() else {
+            throw Abort(Status.notFound, reason: "identifier could be found")
         }
         
         return device
