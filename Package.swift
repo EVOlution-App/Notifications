@@ -3,7 +3,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "evolution-notification",
+    name: "notifications",
     products: [
         .library(name: "App", targets: ["App"]),
         .executable(name: "Run", targets: ["Run"])
