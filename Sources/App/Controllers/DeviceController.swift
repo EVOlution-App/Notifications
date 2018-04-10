@@ -61,7 +61,12 @@ final class DeviceController {
         
 
         let query = try Device.makeQuery()
-        guard let device = try query.filter("owner", owner).first() else {
+        let list = try query.and { andGroup in
+            try andGroup.filter("owner", owner)
+            try andGroup.filter("identifier", identifier)
+        }
+        
+        guard let device = try list.first() else {
             // New device
             let device = try request.device()
             device.appID = key
