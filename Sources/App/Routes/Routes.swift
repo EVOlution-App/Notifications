@@ -16,5 +16,9 @@ extension Droplet {
         let userController = UserController()
         put("user", ":id", handler: userController.updateTags)
         get("user", ":id", handler: userController.show)
+        
+        // Track
+        let trackController = TrackController()
+        post("track", handler: trackController.register)
     }
 }

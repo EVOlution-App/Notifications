@@ -23,5 +23,7 @@ extension Config {
         preparations.append(Tag.self)
         preparations.append(Track.self)
         preparations.append(User.self)
+        preparations.append(Track.self)
+        preparations.append(Notification.self)
     }
 }
