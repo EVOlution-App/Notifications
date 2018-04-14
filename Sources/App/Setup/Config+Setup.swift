@@ -20,5 +20,8 @@ extension Config {
     private func setupPreparations() throws {
         preparations.append(App.self)
         preparations.append(Device.self)
+        preparations.append(Tag.self)
+        preparations.append(Track.self)
+        preparations.append(User.self)
     }
 }
