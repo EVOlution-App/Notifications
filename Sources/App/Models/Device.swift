@@ -7,17 +7,16 @@ final class Device: Model {
     let storage = Storage()
     static let entity = "Device"
     
-    var identifier: String
-    var owner:     String
-    var test:       Bool = false
-    var subscribed: Bool = true
-    var os:         String?
-    var model:      String?
-    var tags:       [JSON]?
-    var language:   String?
-    var appID:      Identifier
-    var createdAt:  Date?
-    var updatedAt:  Date?
+    var token       : String
+    var user        : Identifier
+    var test        : Bool = false
+    var subscribed  : Bool = true
+    var os          : String?
+    var model       : String?
+    var language    : String?
+    var appID       : Identifier
+    var createdAt   : Date?
+    var updatedAt   : Date?
     
     var app: Parent<Device, App> {
         return parent(id: appID)
@@ -25,52 +24,48 @@ final class Device: Model {
     
     struct Keys {
         static let id           = "id"
-        static let identifier   = "identifier"
-        static let owner       = "owner"
+        static let token        = "token"
+        static let user         = "user"
         static let test         = "test"
         static let subscribed   = "subscribed"
         static let os           = "os"
         static let model        = "model"
-        static let tags         = "tags"
         static let language     = "language"
         static let app          = "app"
         static let createdAt    = "createdAt"
         static let updatedAt    = "updatedAt"
     }
     
-    init(identifier: String,
-         owner: String,
+    init(token: String,
+         user: Identifier,
          test: Bool = false,
          subscribed: Bool = true,
          os: String? = nil,
          model: String? = nil,
-         tags: [JSON]? = nil,
          language: String? = nil,
          appID: Identifier,
          createdAt: Date? = Date(),
          updatedAt: Date? = Date()) {
         
-        self.identifier = identifier
-        self.owner = owner
-        self.test = test
-        self.subscribed = subscribed
-        self.os = os
-        self.model = model
-        self.tags = tags
-        self.language = language
-        self.appID = appID
-        self.createdAt = createdAt
-        self.updatedAt = updatedAt
+        self.token          = token
+        self.user           = user
+        self.test           = test
+        self.subscribed     = subscribed
+        self.os             = os
+        self.model          = model
+        self.language       = language
+        self.appID          = appID
+        self.createdAt      = createdAt
+        self.updatedAt      = updatedAt
     }
     
     init(row: Row) throws {
-        identifier  = try row.get(Device.Keys.identifier)
-        owner      = try row.get(Device.Keys.owner)
+        token  = try row.get(Device.Keys.token)
+        user      = try row.get(Device.Keys.user)
         test        = try row.get(Device.Keys.test)
         subscribed  = try row.get(Device.Keys.subscribed)
         os          = try row.get(Device.Keys.os)
         model       = try row.get(Device.Keys.model)
-        tags        = try row.get(Device.Keys.tags)
         language    = try row.get(Device.Keys.language)
         appID       = try row.get(Device.Keys.app)
         createdAt   = try row.get(Device.Keys.createdAt)
@@ -79,13 +74,12 @@ final class Device: Model {
     
     func makeRow() throws -> Row {
         var row = Row()
-        try row.set(Device.Keys.identifier, identifier)
-        try row.set(Device.Keys.owner, owner)
+        try row.set(Device.Keys.token, token)
+        try row.set(Device.Keys.user, user)
         try row.set(Device.Keys.test, test)
         try row.set(Device.Keys.subscribed, subscribed)
         try row.set(Device.Keys.os, os)
         try row.set(Device.Keys.model, model)
-        try row.set(Device.Keys.tags, tags)
         try row.set(Device.Keys.language, language)
         try row.set(Device.Keys.app, appID)
         try row.set(Device.Keys.createdAt, createdAt)
@@ -100,13 +94,12 @@ extension Device: Preparation {
     static func prepare(_ database: Database) throws {
         try database.create(self) { builder in
             builder.id()
-            builder.string(Device.Keys.identifier)
-            builder.string(Device.Keys.owner)
+            builder.string(Device.Keys.token)
+            builder.string(Device.Keys.user)
             builder.bool(Device.Keys.test)
             builder.bool(Device.Keys.subscribed)
             builder.string(Device.Keys.os)
             builder.string(Device.Keys.model)
-            builder.custom(Device.Keys.tags, type: "[JSON]]")
             builder.string(Device.Keys.language)
             builder.string(Device.Keys.app)
             builder.date(Device.Keys.createdAt)
@@ -123,13 +116,12 @@ extension Device: Preparation {
 extension Device: JSONConvertible {
     convenience init(json: JSON) throws {
         self.init(
-            identifier: try json.get(Device.Keys.identifier),
-            owner:     try json.get(Device.Keys.owner),
+            token: try json.get(Device.Keys.token),
+            user:     try json.get(Device.Keys.user),
             test:       try json.get(Device.Keys.test),
             subscribed: try json.get(Device.Keys.subscribed),
             os:         try json.get(Device.Keys.os),
             model:      try json.get(Device.Keys.model),
-            tags:       try json.get(Device.Keys.tags),
             language:   try json.get(Device.Keys.language),
             appID:      try json.get(Device.Keys.app)
         )
@@ -137,13 +129,12 @@ extension Device: JSONConvertible {
     
     func makeJSON() throws -> JSON {
         var json = JSON()
-        try json.set(Device.Keys.identifier, identifier)
-        try json.set(Device.Keys.owner, owner)
+        try json.set(Device.Keys.token, token)
+        try json.set(Device.Keys.user, user)
         try json.set(Device.Keys.test, test)
         try json.set(Device.Keys.subscribed, subscribed)
         try json.set(Device.Keys.os, os)
         try json.set(Device.Keys.model, model)
-        try json.set(Device.Keys.tags, tags)
         try json.set(Device.Keys.language, language)
         try json.set(Device.Keys.createdAt, createdAt)
         try json.set(Device.Keys.updatedAt, updatedAt)
@@ -152,18 +143,18 @@ extension Device: JSONConvertible {
     }
 }
 
-// MARK: HTTP
+// MARK: - HTTP
 extension Device: ResponseRepresentable { }
 
-// MARK: Update
+// MARK: - Update
 extension Device: Updateable {
     public static var updateableKeys: [UpdateableKey<Device>] {
         return [
-            UpdateableKey(Device.Keys.identifier, String.self) { device, identifier in
-                device.identifier = identifier
+            UpdateableKey(Device.Keys.token, String.self) { device, token in
+                device.token = token
             },
-            UpdateableKey(Device.Keys.owner, String.self) { device, owner in
-                device.owner = owner
+            UpdateableKey(Device.Keys.user, Identifier.self) { device, user in
+                device.user = user
             },
             UpdateableKey(Device.Keys.test, Bool.self) { device, test in
                 device.test = test
@@ -177,9 +168,6 @@ extension Device: Updateable {
             UpdateableKey(Device.Keys.model, String.self) { device, model in
                 device.model = model
             },
-            UpdateableKey(Device.Keys.tags, [JSON].self) { device, tags in
-                device.tags = tags
-            },
             UpdateableKey(Device.Keys.language, String.self) { device, language in
                 device.language = language
             },
@@ -187,5 +175,23 @@ extension Device: Updateable {
                 device.updatedAt = updatedAt
             }
         ]
+    }
+}
+
+// MARK: - Query
+extension Device {
+    public static func get(by token: String, user: String) throws -> Device? {
+        let query = try Device.makeQuery()
+        let device = try query.and { andGroup in
+            try andGroup.filter("user", user)
+            try andGroup.filter("token", token)
+        }.first()
+
+        return device
+    }
+    
+    public static func get(by token: String, and user: User) throws -> Device? {
+        return try Device.get(by: token,
+                              user: user.ckID)
     }
 }
