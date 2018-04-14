@@ -43,6 +43,7 @@ final class UserController {
             user.tagsID = tagsID
         }
 
+        user.updatedAt = Date()
         try user.save()
 
         return try user.makeJSON()
