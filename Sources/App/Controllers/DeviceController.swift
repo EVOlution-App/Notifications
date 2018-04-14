@@ -2,90 +2,80 @@ import Vapor
 import HTTP
 
 final class DeviceController {
-    @discardableResult
-    func checkAPIKey(_ request: Request) throws -> Identifier {
-        guard let appKey = request.headers["Authorization"] else {
-            throw Abort(Status.forbidden, reason: "Missing header 'Authorization' parameter")
-        }
-        
-        let appQuery = try App.makeQuery()
-        guard let app = try appQuery.filter("key", appKey).first(), let key = app.id  else {
-            throw Abort(Status.unauthorized, reason: "Invalid 'Authorization' Key")
-        }
-        
-        return key
-    }
+  
     
     func show(_ request: Request) throws -> ResponseRepresentable {
-        try checkAPIKey(request)
+        try AuthorizationProvider.checkAPIKey(request)
         
-        guard let identifier = request.parameters["identifier"]?.string else {
-            throw Abort(Status.notFound, reason: "identifier is required")
+        guard let token = request.parameters["token"]?.string else {
+            throw Abort(Status.notFound, reason: "token is required")
         }
 
         let query = try Device.makeQuery()
-        guard let device = try query.filter("identifier", identifier).first() else {
-            throw Abort(Status.notFound, reason: "identifier could be found")
+        guard let device = try query.filter("token", token).first() else {
+            throw Abort(Status.notFound, reason: "token could be found")
         }
         
         return device
     }
     
     func store(_ request: Request) throws -> ResponseRepresentable {
-        let key = try checkAPIKey(request)
+        let key = try AuthorizationProvider.checkAPIKey(request)
 
         guard let json = request.json else {
             throw Abort.badRequest
         }
         
-        guard let identifier = json["identifier"]?.string else {
-            throw Abort(Status.unprocessableEntity, reason: "Missing 'identifier' parameter")
+        guard let token = json["token"]?.string else {
+            throw Abort(Status.unprocessableEntity, reason: "Missing 'token' parameter")
         }
         
-        guard let owner = json["owner"]?.string else {
-            throw Abort(Status.unprocessableEntity, reason: "Missing 'owner' parameter")
+        guard let userID = json["user"]?.string else {
+            throw Abort(Status.unprocessableEntity, reason: "Missing 'user' parameter")
         }
         
-        let test: Bool = json["test"]?.bool ?? false
-        let subscribed = json["subscribed"]?.bool ?? false
-        
-        let os = json["os"]?.string
-        let model = json["model"]?.string
-        
-        var tags: [JSON]?
-        if let values = json["tags"]?.array {
-            tags = values
+        var user: User
+        if let value = try User.get(by: userID) {
+            user = value
         }
-
-        let language = json["language"]?.string
-        
-
-        let query = try Device.makeQuery()
-        let list = try query.and { andGroup in
-            try andGroup.filter("owner", owner)
-            try andGroup.filter("identifier", identifier)
+        else {
+            // New user
+            let newUser = User(identifier: userID, tags: [])
+            
+            // Register current tags avaiable to user
+            let tags: [Identifier] = try Tag.all().flatMap { tag in
+                return try? tag.assertExists()
+            }
+            newUser.tagsID = tags
+            
+            try newUser.save()
+            user = newUser
         }
         
-        guard let device = try list.first() else {
+        let language    = json["language"]?.string
+        let model       = json["model"]?.string
+        let os          = json["os"]?.string
+        let subscribed  = json["subscribed"]?.bool ?? false
+        
+        guard let device = try Device.get(by: token, and: user) else {
             // New device
             let device = try request.device()
             device.appID = key
-            
+
             try device.save()
 
             return device
         }
 
-        device.identifier = identifier
-        device.owner = owner
-        device.test = test
-        device.subscribed = subscribed
-        device.os = os
-        device.model = model
-        device.tags = tags
-        device.language = language
-        device.appID = key
-        device.updatedAt = Date()
+        device.appID        = key
+        device.token        = token
+        device.user         = try user.assertExists()
+        
+        device.subscribed   = subscribed
+        device.os           = os
+        device.model        = model
+        device.language     = language
+        device.updatedAt    = Date()
         
         try device.save()
 
