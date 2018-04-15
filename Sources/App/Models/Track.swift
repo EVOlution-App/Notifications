@@ -96,3 +96,34 @@ extension Track: JSONConvertible {
 
 // MARK: HTTP
 extension Track: ResponseRepresentable { }
+
+// MARK: - Query
+extension Track {
+    public static func get(by id: String) throws -> Track? {
+        let query = try Track.makeQuery()
+        guard let track = try query.filter("_id", id).first() else {
+            return nil
+        }
+        
+        return track
+    }
+    
+    public static func getBy(notification: String, user: String, source: String) throws -> Track? {
+        let query = try Track.makeQuery()
+        let track = try query.and { andGroup in
+            try andGroup.filter("notification", notification)
+            try andGroup.filter("user", user)
+            try andGroup.filter("source", source)
+            }.first()
+        
+        return track
+    }
+    
+    public static func get(by id: Identifier) throws -> Track? {
+        guard let value = id.string else {
+            return nil
+        }
+        
+        return try Track.get(by: value)
+    }
+}

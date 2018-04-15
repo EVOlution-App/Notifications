@@ -10,11 +10,11 @@ final class TrackController {
         }
         
         // User
-        guard let userID = json["user"]?.string else {
+        guard let ckID = json["user"]?.string else {
             throw Abort(.badRequest, reason: "user is required")
         }
         
-        guard let user = try User.get(by: userID) else {
+        guard let user = try User.get(by: ckID) else {
             throw Abort(.notFound, reason: "User not found")
         }
         
@@ -35,8 +35,11 @@ final class TrackController {
         guard let source = SourceTrack(rawValue: sourceID) else {
             throw Abort(.badRequest, reason: "invalid source: '\(sourceID)'. Sources available: 'ios', 'macos', 'safari', 'chrome'")
         }
+
+        if let userID = user.id?.string ,  try Track.getBy(notification: notificationID, user: userID, source: sourceID) != nil {
+            throw Abort(.conflict, reason: "You've already tracked your notification.")
+        }
         
-        // TODO: Implement block avoiding to save the track more than one time
         // Save Track
         let track = Track(
             notification: try notification.assertExists(),
