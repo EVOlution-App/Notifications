@@ -69,8 +69,7 @@ final class DeviceController {
         device.appID        = key
         device.token        = token
         device.user         = try user.assertExists()
-        
-        device.subscribed   = subscribed
+
         device.os           = os
         device.model        = model
         device.language     = language

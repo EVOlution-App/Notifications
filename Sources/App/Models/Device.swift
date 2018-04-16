@@ -10,7 +10,6 @@ final class Device: Model {
     var token       : String
     var user        : Identifier
     var test        : Bool = false
-    var subscribed  : Bool = true
     var os          : String?
     var model       : String?
     var language    : String?
@@ -27,7 +26,6 @@ final class Device: Model {
         static let token        = "token"
         static let user         = "user"
         static let test         = "test"
-        static let subscribed   = "subscribed"
         static let os           = "os"
         static let model        = "model"
         static let language     = "language"
@@ -39,7 +37,6 @@ final class Device: Model {
     init(token: String,
          user: Identifier,
          test: Bool = false,
-         subscribed: Bool = true,
          os: String? = nil,
          model: String? = nil,
          language: String? = nil,
@@ -50,7 +47,6 @@ final class Device: Model {
         self.token          = token
         self.user           = user
         self.test           = test
-        self.subscribed     = subscribed
         self.os             = os
         self.model          = model
         self.language       = language
@@ -63,7 +59,6 @@ final class Device: Model {
         token  = try row.get(Device.Keys.token)
         user      = try row.get(Device.Keys.user)
         test        = try row.get(Device.Keys.test)
-        subscribed  = try row.get(Device.Keys.subscribed)
         os          = try row.get(Device.Keys.os)
         model       = try row.get(Device.Keys.model)
         language    = try row.get(Device.Keys.language)
@@ -77,7 +72,6 @@ final class Device: Model {
         try row.set(Device.Keys.token, token)
         try row.set(Device.Keys.user, user)
         try row.set(Device.Keys.test, test)
-        try row.set(Device.Keys.subscribed, subscribed)
         try row.set(Device.Keys.os, os)
         try row.set(Device.Keys.model, model)
         try row.set(Device.Keys.language, language)
@@ -97,7 +91,6 @@ extension Device: Preparation {
             builder.string(Device.Keys.token)
             builder.string(Device.Keys.user)
             builder.bool(Device.Keys.test)
-            builder.bool(Device.Keys.subscribed)
             builder.string(Device.Keys.os)
             builder.string(Device.Keys.model)
             builder.string(Device.Keys.language)
@@ -119,7 +112,6 @@ extension Device: JSONConvertible {
             token: try json.get(Device.Keys.token),
             user:     try json.get(Device.Keys.user),
             test:       try json.get(Device.Keys.test),
-            subscribed: try json.get(Device.Keys.subscribed),
             os:         try json.get(Device.Keys.os),
             model:      try json.get(Device.Keys.model),
             language:   try json.get(Device.Keys.language),
@@ -132,7 +124,6 @@ extension Device: JSONConvertible {
         try json.set(Device.Keys.token, token)
         try json.set(Device.Keys.user, user)
         try json.set(Device.Keys.test, test)
-        try json.set(Device.Keys.subscribed, subscribed)
         try json.set(Device.Keys.os, os)
         try json.set(Device.Keys.model, model)
         try json.set(Device.Keys.language, language)
@@ -158,9 +149,6 @@ extension Device: Updateable {
             },
             UpdateableKey(Device.Keys.test, Bool.self) { device, test in
                 device.test = test
-            },
-            UpdateableKey(Device.Keys.subscribed, Bool.self) { device, subscribed in
-                device.subscribed = subscribed
             },
             UpdateableKey(Device.Keys.os, String.self) { device, os in
                 device.os = os
