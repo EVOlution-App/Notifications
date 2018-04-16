@@ -55,7 +55,6 @@ final class DeviceController {
         let language    = json["language"]?.string
         let model       = json["model"]?.string
         let os          = json["os"]?.string
-        let subscribed  = json["subscribed"]?.bool ?? false
         
         guard let device = try Device.get(by: token, and: user) else {
             // New device
