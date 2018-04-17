@@ -27,11 +27,11 @@ final class DeviceController {
         }
         
         guard let token = json["token"]?.string else {
-            throw Abort(Status.unprocessableEntity, reason: "Missing 'token' parameter")
+            throw Abort(Status.unprocessableEntity, reason: "'token' is required")
         }
         
         guard let userID = json["user"]?.string else {
-            throw Abort(Status.unprocessableEntity, reason: "Missing 'user' parameter")
+            throw Abort(Status.unprocessableEntity, reason: "'user' is required")
         }
         
         var user: User

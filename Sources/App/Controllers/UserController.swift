@@ -6,7 +6,7 @@ final class UserController {
         try AuthorizationProvider.checkAPIKey(request)
         
         guard let userID = request.parameters["id"]?.string else {
-            throw Abort(.notFound, reason: "userid is required")
+            throw Abort(.notFound, reason: "'userid' is required")
         }
         
         guard let user = try User.get(by: userID) else {
@@ -24,7 +24,7 @@ final class UserController {
         }
         
         guard let userID = request.parameters["id"]?.string else {
-            throw Abort(.notFound, reason: "userid is required")
+            throw Abort(.notFound, reason: "'userid' is required")
         }
 
         guard let user = try User.get(by: userID) else {
