@@ -109,8 +109,8 @@ extension Device: Preparation {
 extension Device: JSONConvertible {
     convenience init(json: JSON) throws {
         self.init(
-            token: try json.get(Device.Keys.token),
-            user:     try json.get(Device.Keys.user),
+            token:      try json.get(Device.Keys.token),
+            user:       try json.get(Device.Keys.user),
             test:       try json.get(Device.Keys.test),
             os:         try json.get(Device.Keys.os),
             model:      try json.get(Device.Keys.model),
@@ -168,7 +168,7 @@ extension Device: Updateable {
 
 // MARK: - Query
 extension Device {
-    public static func get(by token: String, user: String) throws -> Device? {
+    public static func get(by token: String, user: Identifier) throws -> Device? {
         let query = try Device.makeQuery()
         let device = try query.and { andGroup in
             try andGroup.filter("user", user)
@@ -179,7 +179,8 @@ extension Device {
     }
     
     public static func get(by token: String, and user: User) throws -> Device? {
+        
         return try Device.get(by: token,
-                              user: user.ckID)
+                              user: user.assertExists())
     }
 }

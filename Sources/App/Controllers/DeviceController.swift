@@ -58,23 +58,19 @@ final class DeviceController {
         
         guard let device = try Device.get(by: token, and: user) else {
             // New device
-            let device = try request.device()
-            device.appID = key
+            let device      = try request.device()
+            device.user     = try user.assertExists()
+            device.appID    = key
 
             try device.save()
 
             return device
         }
 
-        device.appID        = key
-        device.token        = token
-        device.user         = try user.assertExists()
-
         device.os           = os
         device.model        = model
         device.language     = language
         device.updatedAt    = Date()
-        
         try device.save()
 
         return device
