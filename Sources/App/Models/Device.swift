@@ -11,6 +11,7 @@ final class Device: Model {
     var user        : Identifier
     var test        : Bool = false
     var os          : String?
+    var appVersion  : String?
     var model       : String?
     var language    : String?
     var appID       : Identifier
@@ -27,6 +28,7 @@ final class Device: Model {
         static let user         = "user"
         static let test         = "test"
         static let os           = "os"
+        static let appVersion   = "appVersion"
         static let model        = "model"
         static let language     = "language"
         static let app          = "app"
@@ -38,6 +40,7 @@ final class Device: Model {
          user: Identifier,
          test: Bool = false,
          os: String? = nil,
+         appVersion: String? = nil,
          model: String? = nil,
          language: String? = nil,
          appID: Identifier,
@@ -48,6 +51,7 @@ final class Device: Model {
         self.user           = user
         self.test           = test
         self.os             = os
+        self.appVersion     = appVersion
         self.model          = model
         self.language       = language
         self.appID          = appID
@@ -56,10 +60,11 @@ final class Device: Model {
     }
     
     init(row: Row) throws {
-        token  = try row.get(Device.Keys.token)
-        user      = try row.get(Device.Keys.user)
+        token       = try row.get(Device.Keys.token)
+        user        = try row.get(Device.Keys.user)
         test        = try row.get(Device.Keys.test)
         os          = try row.get(Device.Keys.os)
+        appVersion  = try row.get(Device.Keys.appVersion)
         model       = try row.get(Device.Keys.model)
         language    = try row.get(Device.Keys.language)
         appID       = try row.get(Device.Keys.app)
@@ -73,6 +78,7 @@ final class Device: Model {
         try row.set(Device.Keys.user, user)
         try row.set(Device.Keys.test, test)
         try row.set(Device.Keys.os, os)
+        try row.set(Device.Keys.appVersion, appVersion)
         try row.set(Device.Keys.model, model)
         try row.set(Device.Keys.language, language)
         try row.set(Device.Keys.app, appID)
@@ -92,6 +98,7 @@ extension Device: Preparation {
             builder.string(Device.Keys.user)
             builder.bool(Device.Keys.test)
             builder.string(Device.Keys.os)
+            builder.string(Device.Keys.appVersion)
             builder.string(Device.Keys.model)
             builder.string(Device.Keys.language)
             builder.string(Device.Keys.app)
@@ -109,13 +116,14 @@ extension Device: Preparation {
 extension Device: JSONConvertible {
     convenience init(json: JSON) throws {
         self.init(
-            token:      try json.get(Device.Keys.token),
-            user:       try json.get(Device.Keys.user),
-            test:       try json.get(Device.Keys.test),
-            os:         try json.get(Device.Keys.os),
-            model:      try json.get(Device.Keys.model),
-            language:   try json.get(Device.Keys.language),
-            appID:      try json.get(Device.Keys.app)
+            token       : try json.get(Device.Keys.token),
+            user        : try json.get(Device.Keys.user),
+            test        : try json.get(Device.Keys.test),
+            os          : try json.get(Device.Keys.os),
+            appVersion  : try json.get(Device.Keys.appVersion),
+            model       : try json.get(Device.Keys.model),
+            language    : try json.get(Device.Keys.language),
+            appID       : try json.get(Device.Keys.app)
         )
     }
     
@@ -125,6 +133,7 @@ extension Device: JSONConvertible {
         try json.set(Device.Keys.user, user)
         try json.set(Device.Keys.test, test)
         try json.set(Device.Keys.os, os)
+        try json.set(Device.Keys.appVersion, appVersion)
         try json.set(Device.Keys.model, model)
         try json.set(Device.Keys.language, language)
         try json.set(Device.Keys.createdAt, createdAt)
@@ -152,6 +161,9 @@ extension Device: Updateable {
             },
             UpdateableKey(Device.Keys.os, String.self) { device, os in
                 device.os = os
+            },
+            UpdateableKey(Device.Keys.appVersion, String.self) { device, appVersion in
+                device.appVersion = appVersion
             },
             UpdateableKey(Device.Keys.model, String.self) { device, model in
                 device.model = model
