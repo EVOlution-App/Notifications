@@ -36,8 +36,13 @@ final class TrackController {
             throw Abort(.badRequest, reason: "invalid source: '\(sourceID)'. Sources available: 'ios', 'macos', 'safari', 'chrome'")
         }
 
-        if let userID = user.id?.string ,  try Track.getBy(notification: notificationID, user: userID, source: sourceID) != nil {
-            throw Abort(.conflict, reason: "You've already tracked your notification.")
+        // Already tracked notification
+        if let userID = user.id?.string, try Track.getBy(notification: notificationID, user: userID, source: sourceID) != nil {
+            let content = BodyContent(.conflict, reason: "You've already tracked your notification.")
+            let body = try content.makeJSON()
+            
+            return try Response(status: .conflict,
+                                json: body)
         }
         
         // Save Track
@@ -51,11 +56,15 @@ final class TrackController {
             try track.save()
         }
         catch {
-            throw Abort(.internalServerError)
+            throw Abort(.serviceUnavailable)
         }
+
+        // Return response
+        let content = BodyContent(.created)
+        let body = try content.makeJSON()
         
-        
-        return Response(status: .created)
+        return try Response(status: .created,
+                            json: body)
     }
 }
 
