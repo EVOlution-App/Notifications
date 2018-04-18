@@ -11,6 +11,7 @@ final class Device: Model {
     var user        : Identifier
     var test        : Bool = false
     var os          : String?
+    var onesignal   : String?
     var appVersion  : String?
     var model       : String?
     var language    : String?
@@ -28,6 +29,7 @@ final class Device: Model {
         static let user         = "user"
         static let test         = "test"
         static let os           = "os"
+        static let onesignal    = "onesignal"
         static let appVersion   = "appVersion"
         static let model        = "model"
         static let language     = "language"
@@ -40,6 +42,7 @@ final class Device: Model {
          user: Identifier,
          test: Bool = false,
          os: String? = nil,
+         onesignal: String? = nil,
          appVersion: String? = nil,
          model: String? = nil,
          language: String? = nil,
@@ -51,6 +54,7 @@ final class Device: Model {
         self.user           = user
         self.test           = test
         self.os             = os
+        self.onesignal      = onesignal
         self.appVersion     = appVersion
         self.model          = model
         self.language       = language
@@ -64,6 +68,7 @@ final class Device: Model {
         user        = try row.get(Device.Keys.user)
         test        = try row.get(Device.Keys.test)
         os          = try row.get(Device.Keys.os)
+        onesignal   = try row.get(Device.Keys.onesignal)
         appVersion  = try row.get(Device.Keys.appVersion)
         model       = try row.get(Device.Keys.model)
         language    = try row.get(Device.Keys.language)
@@ -77,7 +82,7 @@ final class Device: Model {
         try row.set(Device.Keys.token, token)
         try row.set(Device.Keys.user, user)
         try row.set(Device.Keys.test, test)
-        try row.set(Device.Keys.os, os)
+        try row.set(Device.Keys.onesignal, onesignal)
         try row.set(Device.Keys.appVersion, appVersion)
         try row.set(Device.Keys.model, model)
         try row.set(Device.Keys.language, language)
@@ -98,6 +103,7 @@ extension Device: Preparation {
             builder.string(Device.Keys.user)
             builder.bool(Device.Keys.test)
             builder.string(Device.Keys.os)
+            builder.string(Device.Keys.onesignal)
             builder.string(Device.Keys.appVersion)
             builder.string(Device.Keys.model)
             builder.string(Device.Keys.language)
@@ -120,6 +126,7 @@ extension Device: JSONConvertible {
             user        : try json.get(Device.Keys.user),
             test        : try json.get(Device.Keys.test),
             os          : try json.get(Device.Keys.os),
+            onesignal   : try json.get(Device.Keys.onesignal),
             appVersion  : try json.get(Device.Keys.appVersion),
             model       : try json.get(Device.Keys.model),
             language    : try json.get(Device.Keys.language),
@@ -161,6 +168,9 @@ extension Device: Updateable {
             },
             UpdateableKey(Device.Keys.os, String.self) { device, os in
                 device.os = os
+            },
+            UpdateableKey(Device.Keys.onesignal, String.self) { device, onesignal in
+                device.onesignal = onesignal
             },
             UpdateableKey(Device.Keys.appVersion, String.self) { device, appVersion in
                 device.appVersion = appVersion
