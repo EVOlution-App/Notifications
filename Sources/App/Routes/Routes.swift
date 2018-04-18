@@ -4,7 +4,7 @@ extension Droplet {
     func setupRoutes() throws {
 
         // Devices
-        let deviceController = DeviceController()
+        let deviceController = DeviceController(drop: self)
         get("device", ":token", handler: deviceController.show)
         post("device", handler: deviceController.store)
         
