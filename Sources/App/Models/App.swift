@@ -61,14 +61,7 @@ extension App: Preparation {
             builder.string(App.Keys.updatedAt)
         }
     }
-    
-    static func loadFixtures() throws {
-        let uuid = UUID().uuidString
-        let app = App(name: "EVOlution App", key: uuid)
-        
-        try app.save()
-    }
-    
+
     static func revert(_ database: Database) throws {
         try database.delete(self)
     }
