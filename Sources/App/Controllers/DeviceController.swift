@@ -55,6 +55,7 @@ final class DeviceController {
         let language    = json["language"]?.string
         let model       = json["model"]?.string
         let os          = json["os"]?.string
+        let appVersion  = json["appVersion"]?.string
         
         guard let device = try Device.get(by: token, and: user) else {
             // New device
@@ -68,6 +69,7 @@ final class DeviceController {
         }
 
         device.os           = os
+        device.appVersion   = appVersion
         device.model        = model
         device.language     = language
         device.updatedAt    = Date()
