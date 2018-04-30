@@ -1,3 +1,3 @@
 {
-  "url": "$MONGODB_NOTIFICATION_URI"
+  "url": "$MONGODB_NOTIFICATIONS_URI"
 }
