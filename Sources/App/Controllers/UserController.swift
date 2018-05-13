@@ -31,6 +31,19 @@ final class UserController {
             throw Abort(.notFound, reason: "User not found")
         }
         
+        if let notifications = json["notifications"]?.bool {
+            user.tagsID = []
+
+            if notifications {
+                // Register current tags avaiable to user
+                let tags: [Identifier] = try Tag.all().flatMap { tag in
+                    return try? tag.assertExists()
+                }
+                
+                user.tagsID = tags
+            }
+        }
+        
         if let values = json["tags"]?.array {
             let tagsID: [Identifier] = values.flatMap { dict in
                 guard let id = dict["id"]?.string else {
