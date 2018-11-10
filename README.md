@@ -2,6 +2,12 @@
 
 This project is responsible to persist the device token from iOS to allow Events to send notifications.
 
+---
+
+**What's needed:**
+- **MONGODB_CONNECTION_URI** as an environment variable
+- Run the [Fixtures](https://github.com/Evolution-App/Fixtures) before the **Notifications** (this source)
+
 ## Requirements
 - Swift 4.0.3
 - Xcode 9+
